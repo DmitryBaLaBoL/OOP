@@ -22,14 +22,21 @@ Triangle::Triangle() {
 }
 // Конструктор с самостоятельным заданием координат вершин
 Triangle::Triangle(double a_x, double a_y, double b_x, double b_y, double c_x, double c_y) {
+	Ax = 0; Ay = 0;Bx = 1; By = 0;Cx = 0; Cy = 1;
 	Set_AllCoordinate(a_x, a_y, b_x, b_y, c_x, c_y);
+	
+
 }
 
 // Сеттер всех вершин треугольника
 void Triangle::Set_AllCoordinate(double a_x, double a_y, double b_x, double b_y, double c_x, double c_y) {
+	double oldxA = Ax, oldyA = Ay, oldxB = Bx, oldyB = By, oldxC = Cx, oldyC = Cy;
 	if (!Is_Coordinate(a_x, a_y, 'A')) { Ax = a_x; Ay = a_y; }
-	if (!Is_Coordinate(b_x, b_y, 'B')) { Bx = b_x; By = b_y; }
+	else { Ax = oldxA; Ay = oldyA; Bx = oldxB; By = oldyB; Cx = oldxC; Cy = oldyC; exit; };
+	if (!Is_Coordinate(b_x, b_y, 'B')) { Bx = b_x; By = b_y; } 
+	else { Ax = oldxA; Ay = oldyA; Bx = oldxB; By = oldyB; Cx = oldxC; Cy = oldyC; exit; };
 	if (!Is_Coordinate(c_x, c_y, 'C')) { Cx = c_x; Cy = c_y; }
+	else { Ax = oldxA; Ay = oldyA; Bx = oldxB; By = oldyB; Cx = oldxC; Cy = oldyC; exit; };
 }
 
 // Сеттер вершины A
@@ -85,17 +92,17 @@ double Triangle::Get_Y_C() const {
 
 // Получение длины стороны напротив вершины A
 double Triangle::Length_A() const {
-	return pow(pow(Bx-By,2) + pow(Cx-Cy,2), 0.5);
+	return pow(pow(Cx - Bx,2) + pow(Cy-By,2), 0.5);
 }
 
 // Получение длины стороны напротив вершины B
 double Triangle::Length_B() const {
-	return pow(pow(Ax - Ay, 2) + pow(Cx - Cy, 2), 0.5);
+	return pow(pow(Ax - Cx, 2) + pow(Ay - Cy, 2), 0.5);
 }
 
 // Получение длины стороны напротив вершины C
 double Triangle::Length_C() const {
-	return pow(pow(Ax - Ay, 2) + pow(Bx - By, 2), 0.5);
+	return pow(pow(Ax - Bx, 2) + pow(Ay - By, 2), 0.5);
 }
 
 // Площадь треугольника
