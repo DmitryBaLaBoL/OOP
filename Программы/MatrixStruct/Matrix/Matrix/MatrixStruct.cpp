@@ -1,7 +1,23 @@
 #include "MatrixStruct.h"
 
-// Проверка допустимости строк и столбцов
-bool Matrix::is_line_col(int line, int col) {
+// Получение матрицы путём удаление i_del строки и j_del столбца
+Matrix Matrix::Delete_line_col(Matrix MainMatr, int i_del, int j_del) const {
+	Matrix result(MainMatr.get_line() - 1, MainMatr.get_col() - 1);
+	for (int i = 0; i < MainMatr.get_line(); i++)
+	{
+		for (int j = 0; j < MainMatr.get_col(); j++)
+		{
+			if (i < i_del && j < j_del) { result.Set_el(i, j, MainMatr.get_element(i, j)); };
+			if (i < i_del && j > j_del) { result.Set_el(i, j - 1, MainMatr.get_element(i, j)); };
+			if (i > i_del && j < j_del) { result.Set_el(i - 1, j, MainMatr.get_element(i, j)); };
+			if (i > i_del && j > j_del) { result.Set_el(i - 1, j - 1, MainMatr.get_element(i, j)); };
+		}
+	}
+	return result;
+}
+
+// Проверка того, чтобы строки и столбцы были неотрицательными
+bool Matrix::is_line_col(int line, int col) const {
 	if (line >= 0 && col >= 0) return true;
 	else {
 		throw std::runtime_error("Недопустимые значения для строк и/или столбцов");
@@ -9,8 +25,8 @@ bool Matrix::is_line_col(int line, int col) {
 	}
 }
 
-// Проверка равенства строк и столбцов матрицы
-bool Matrix::is_line_col_equality(Matrix Matrix2) {
+// Проверка того, чтобы кол-во строк и столбцов матриц было одинаково ( для операторов )
+bool Matrix::is_line_col_equality(const Matrix& Matrix2) const {
 	if (MainMatrix.size() == Matrix2.get_line() && MainMatrix[0].size() == Matrix2.get_col()) return true;
 	else {
 		throw std::runtime_error("Кол-ва строк и столбцов матриц должны быть одинаковы");
@@ -18,7 +34,7 @@ bool Matrix::is_line_col_equality(Matrix Matrix2) {
 	}
 }
 
-// Установка новых размеров
+// Установка новых размеров строк и столбцов
 void Matrix::new_line_col(int line, int col) {
 	MainMatrix.resize(line);
 	for (int i = 0; i < MainMatrix.size(); i++)
@@ -72,7 +88,7 @@ void Matrix::Set_col(int col) {
 }
 
 // Установка нового значения ячейки
-void Matrix::Set_el(int line, int col,double dif) {
+void Matrix::Set_el(int line, int col, double dif) {
 	try {
 		if (is_line_col(line, col)) {
 			MainMatrix[line][col] = dif;
@@ -84,7 +100,7 @@ void Matrix::Set_el(int line, int col,double dif) {
 }
 
 // Получение элемента [k][m] матрицы
-float Matrix::get_element(int k, int m) {
+float Matrix::get_element(int k, int m) const {
 	try {
 		if (is_line_col(k, m)) {
 			return MainMatrix[k][m];
@@ -93,27 +109,28 @@ float Matrix::get_element(int k, int m) {
 	catch (const std::exception& e) {
 		cout << e.what() << endl;
 	}
-	
+
 }
 
 // Получение кол-ва строк
-int Matrix::get_line() {
+int Matrix::get_line() const {
 	return MainMatrix.size();
 }
 
 // Получение кол-ва столбцов
-int Matrix::get_col() {
+int Matrix::get_col() const {
 	return MainMatrix[0].size();
 }
 
 // Вывод матрицы
 void Matrix::get_matrix() const {
+	cout.precision(4);
 	cout << endl;
 	for (int i = 0; i < MainMatrix.size(); i++)
 	{
 		for (int j = 0; j < MainMatrix[0].size(); j++)
 		{
-			cout << MainMatrix[i][j] << "  ";
+			cout << setfill(' ') << setw(12) << fixed << MainMatrix[i][j];
 		}
 		cout << endl;
 	}
@@ -136,13 +153,14 @@ void Matrix::fill_matrix_random(double min, double max) {
 	{
 		for (int j = 0; j < MainMatrix[0].size(); j++)
 		{
-			MainMatrix[i][j] = 1.0 * (rand() % 10) * (max - min) + min;//1.0 * rand() / RAND_MAX * (max - min) + min;
+			MainMatrix[i][j] = 1.0 * (rand() % 10) * (max - min) + min; //целые числа
+			//MainMatrix[i][j] = 1.0 * rand() / RAND_MAX * (max - min) + min; // вещ числа
 		}
 	}
 }
 
 // Сложение матриц
-Matrix Matrix::operator+ (Matrix Matrix2) {
+Matrix Matrix::operator+ (const Matrix& Matrix2) const {
 	Matrix result(MainMatrix.size(), MainMatrix[0].size());
 	try {
 		if (is_line_col_equality(Matrix2)) {
@@ -163,7 +181,7 @@ Matrix Matrix::operator+ (Matrix Matrix2) {
 }
 
 // Сложение матрицы с числом
-Matrix Matrix::operator+ (double dif) {
+Matrix Matrix::operator+ (double dif) const {
 	Matrix result(MainMatrix.size(), MainMatrix[0].size());
 	for (int i = 0; i < MainMatrix.size(); i++)
 	{
@@ -176,7 +194,7 @@ Matrix Matrix::operator+ (double dif) {
 }
 
 // Вычитание матриц
-Matrix Matrix::operator- (Matrix Matrix2) {
+Matrix Matrix::operator- (const Matrix& Matrix2) const {
 	Matrix result(MainMatrix.size(), MainMatrix[0].size());
 	try {
 		if (is_line_col_equality(Matrix2)) {
@@ -197,7 +215,7 @@ Matrix Matrix::operator- (Matrix Matrix2) {
 }
 
 // Вычитание матрицы с числом
-Matrix Matrix::operator- (double dif) {
+Matrix Matrix::operator- (double dif) const {
 	Matrix result(MainMatrix.size(), MainMatrix[0].size());
 	for (int i = 0; i < MainMatrix.size(); i++)
 	{
@@ -223,7 +241,7 @@ Matrix Matrix::operator* (double dif) const {
 }
 
 // Умножение матрицы на матрицу
-Matrix Matrix::operator* (Matrix Matrix2) {
+Matrix Matrix::operator* (const Matrix& Matrix2) const {
 	Matrix result(MainMatrix.size(), MainMatrix[0].size());
 	try {
 		if (is_line_col_equality(Matrix2)) {
@@ -250,7 +268,7 @@ Matrix Matrix::operator* (Matrix Matrix2) {
 }
 
 // Собственное умножение матрицы на матрицу
-void Matrix::operator*= (Matrix Matrix2) {
+void Matrix::operator*= (const Matrix& Matrix2) {
 	Matrix between(MainMatrix.size(), MainMatrix[0].size());
 	Matrix result(MainMatrix.size(), MainMatrix[0].size());
 	for (int i = 0; i < MainMatrix.size(); i++)
@@ -284,7 +302,7 @@ void Matrix::operator*= (double dif) {
 }
 
 // Собственное вычитание матриц
-void Matrix::operator-= (Matrix Matrix2) {
+void Matrix::operator-= (const Matrix& Matrix2) {
 	try {
 		if (is_line_col_equality(Matrix2)) {
 			for (int i = 0; i < MainMatrix.size(); i++)
@@ -350,7 +368,7 @@ Matrix Matrix::Trans_matrix() {
 	{
 		for (int j = 0; j < MainMatrix[0].size(); j++)
 		{
-			result.Set_el(i,j, MainMatrix[j][i]);
+			result.Set_el(i, j, MainMatrix[j][i]);
 		}
 	}
 	return result;
@@ -367,30 +385,45 @@ void Matrix::Diagonal_matrix() {
 	}
 }
 
-// Не работает для 3+
-// Определитель матрицы
-float Matrix::determinant(int rang) {
-	if (!(MainMatrix.size() == MainMatrix[0].size())) cout << "Для поиска определителя матрица должны быть квадратной";
+// Поиск определителя матрицы, ранга rang
+double Matrix::determinant(Matrix Matr, int rang) const {
+	if (!(Matr.get_line() == Matr.get_col())) cout << "Для поиска определителя матрица должны быть квадратной";
 	else {
-		if (rang == 1) return MainMatrix[0][0];
-		else if (rang == 2) return MainMatrix[0][0] * MainMatrix[1][1] - MainMatrix[0][1] * MainMatrix[1][0];
-		else if (rang == 3)return MainMatrix[0][0] * MainMatrix[1][1] * MainMatrix[2][2] +
-			MainMatrix[1][0] * MainMatrix[2][1] * MainMatrix[0][2] +
-			MainMatrix[0][1] * MainMatrix[1][2] * MainMatrix[2][0] -
-			MainMatrix[0][2] * MainMatrix[1][1] * MainMatrix[2][0] -
-			MainMatrix[0][1] * MainMatrix[1][0] * MainMatrix[2][2] -
-			MainMatrix[0][0] * MainMatrix[2][1] * MainMatrix[1][2];
-		else cout << "Определитель считается только 1,2 и 3 порядка";
+		if (rang == 1) return Matr.get_element(0,0);
+		else if (rang == 2) return Matr.get_element(0, 0) * Matr.get_element(1, 1) - Matr.get_element(0, 1) * Matr.get_element(1, 0);
+		else {
+			double Det = 0;
+			for (int i = 0; i < rang; i++)
+			{
+				Matrix Between = Delete_line_col(Matr, 0, i);
+				Det = Det + pow(-1, i + 1 + 1) * Matr.get_element(0, i) * determinant(Between, rang - 1);
+				Between.~Matrix();
+			}
+			return Det;
+		}
+
 	}
 }
 
-/*// Обратная матрица
-Matrix Matrix::Back_matrix() {
+// Обратная матрица
+Matrix Matrix::Back_matrix(Matrix Matr) const {
 	if (!(MainMatrix.size() == MainMatrix[0].size())) cout << "Для поиска обратной матрицы, матрица должна быть квадратной";
-	else if (MainMatrix.size() > 3 ) cout << "Обратная матрица только до 3 порядка";
-	else if (determinant(MainMatrix.size()) == 0) cout << "Матрица не имеет обратную, определитель = 0";
-	else if 
-}*/
+	else if (determinant(Matr, Matr.get_line()) == 0) cout << "Матрица не имеет обратную, определитель = 0";
+	else {
+		Matrix Minor(Matr.get_line(), Matr.get_line());
+		for (int i = 0; i < Matr.get_line(); i++)
+		{
+			for (int j = 0; j < Matr.get_col(); j++)
+			{
+				Matrix Between = Delete_line_col(Matr, i, j);
+				Minor.Set_el(i, j, determinant(Between, Between.get_col()) * pow(-1,i+j+2));
+				Between.~Matrix();
+			}
+		}
+		Minor = Minor.Trans_matrix();
+		return Minor * (1 / determinant(Matr, Matr.get_line()));
+	}
+}
 
 // Деструктор класса
 Matrix::~Matrix() {

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 // Класс - Матрица
@@ -10,13 +11,16 @@ private:
 	// Поля класса
 	vector<vector<double>> MainMatrix;
 
-	// Проверка допустимости строк и столбцов
-	bool is_line_col(int line, int col);
+	// Получение матрицы путём удаление i_del строки и j_del столбца
+	Matrix Delete_line_col(Matrix MainMatr, int i_del, int j_del) const;
 
-	// Проверка равенства строк и столбцов матрицы
-	bool is_line_col_equality(Matrix Matrix2);
+	// Проверка того, чтобы строки и столбцы были неотрицательными
+	bool is_line_col(int line, int col) const;
 
-	// Установка новых размеров
+	// Проверка того, чтобы кол-во строк и столбцов матриц было одинаково ( для операторов )
+	bool is_line_col_equality(const Matrix& Matrix2) const;
+
+	// Установка новых размеров строк и столбцов
 	void new_line_col(int line, int col);
 
 public:
@@ -40,13 +44,13 @@ public:
 	void Set_el(int line, int col, double dif);
 
 	// Получение элемента [k][m] матрицы
-	float get_element(int k, int m);
+	float get_element(int k, int m) const;
 
 	// Получение кол-ва строк
-	int get_line();
+	int get_line() const;
 
 	// Получение кол-ва столбцов
-	int get_col();
+	int get_col() const;
 
 	// Вывод матрицы
 	void get_matrix() const;
@@ -58,31 +62,31 @@ public:
 	void fill_matrix_random(double min, double max);
 
 	// Сложение матриц
-	Matrix operator+ (Matrix Matrix2);
+	Matrix operator+ (const Matrix& Matrix2) const;
 
 	// Сложение матрицы с числом
-	Matrix operator+ (double dif);
+	Matrix operator+ (double dif) const;
 
 	// Вычитание матриц
-	Matrix operator- (Matrix Matrix2);
+	Matrix operator- (const Matrix& Matrix2) const;
 
 	// Вычитание матрицы с числом
-	Matrix operator- (double dif);
+	Matrix operator- (double dif) const;
 
 	// Умножение матрицы на число dif
 	Matrix operator* (double dif) const;
 
 	// Умножение матрицы на матрицу
-	Matrix operator* (Matrix Matrix2);
+	Matrix operator* (const Matrix& Matrix2)const;
 
 	// Собственное умножение матрицы на матрицу
-	void operator*= (Matrix Matrix2);
+	void operator*= (const Matrix& Matrix2);
 
 	// Собственное умножение матрицы на число dif
 	void operator*= (double dif);
 
 	// Собственное вычитание матриц
-	void operator-= (Matrix Matrix2);
+	void operator-= (const Matrix& Matrix2);
 
 	// Собственное вычитание числа dif из матрицы
 	void operator-= (double dif);
@@ -99,11 +103,11 @@ public:
 	// Диагональная матрица
 	void Diagonal_matrix();
 
-	// Определитель матрицы
-	float determinant(int rang);
+	// Поиск определителя матрицы, ранга rang
+	double determinant(Matrix Matr,int rang) const;
 
-	/*// Обратная матрица
-	Matrix Back_matrix();*/
+	// Обратная матрица
+	Matrix Back_matrix(Matrix Matr) const ;
 
 	// Деструктор класса
 	~Matrix();
