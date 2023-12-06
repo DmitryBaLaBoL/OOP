@@ -12,7 +12,7 @@ private:
 	vector<vector<double>> MainMatrix;
 
 	// Получение матрицы путём удаление i_del строки и j_del столбца
-	Matrix Delete_line_col(Matrix MainMatr, int i_del, int j_del) const;
+	Matrix Delete_line_col(const Matrix * MainMatr, int i_del, int j_del) const;
 
 	// Проверка того, чтобы строки и столбцы были неотрицательными
 	bool is_line_col(int line, int col) const;
@@ -92,7 +92,7 @@ public:
 	void operator-= (double dif);
 
 	// Собственное сложение матриц
-	void operator+= (Matrix Matrix2);
+	void operator+= (const Matrix & Matrix2);
 
 	// Собственное сложение числа dif с матрицей
 	void operator+= (double dif);
@@ -104,10 +104,10 @@ public:
 	void Diagonal_matrix();
 
 	// Поиск определителя матрицы, ранга rang
-	double determinant(Matrix Matr,int rang) const;
+	double determinant(int rang) const;
 
 	// Обратная матрица
-	Matrix Back_matrix(Matrix Matr) const ;
+	Matrix Back_matrix() const ;
 
 	// Деструктор класса
 	~Matrix();
