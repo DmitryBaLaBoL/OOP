@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 using namespace std;
-class Chessmen {
+virtual class Chessmen  {
 protected:
 	// x - координата фигуры по x
 	// y - координата фигуры по y

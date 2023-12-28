@@ -133,8 +133,27 @@ int main()
     }
     FromFile.close();
     cout << Test55.To_String() << endl;
-
-
+    cout << endl << "Пример 6: " << endl;
+    Triangle* *Test6 = new Triangle * [5];
+    Test6[0] = new Triangle;
+    Test6[1] = new Triangle(-2, 3, 5, 6, 7, -1);
+    Test6[2] = new Triangle(1, -1, -1, 1, 1, 1);
+    Test6[3] = new Triangle(2, -3, 4, 5, 1, -1);
+    Test6[4] = new Triangle;
+    for (int i = 0; i < 5; i++)
+    {
+        cout << Test6[i]->To_String() << endl;
+    }
+    Test6[0]->Set_AllCoordinate(0, 0, 0, 0, 0, 0);
+    // Координаты не должны измениться, т.к. такого треугольника не бывает
+    cout << Test6[0]->To_String() << endl;
+    // Правильно координаты не поменялись
+    // Освобождаем память
+    for (int i = 0; i < 5; i++)
+    {
+        delete Test6[i];
+    }
+    delete[] Test6;
 
 
     /*Test.Set_AllCoordinate(24, -5, 2, 17, 2, 17);
